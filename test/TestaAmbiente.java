@@ -21,25 +21,26 @@ import static org.junit.Assert.*;
  * @author rafae
  */
 public class TestaAmbiente {
-    private final String URL="jdbc:mysql://localhost/bancorrw";
-    private final String USER="root";
-    private final String PWD="root";
-    
+
+    private final String URL = "jdbc:mysql://localhost/bancorrw";
+    private final String USER = "root";
+    private final String PWD = "admin";
+
     public TestaAmbiente() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -49,30 +50,26 @@ public class TestaAmbiente {
     //
     @Test
     public void testaJunit() {
-        
+
     }
-    
+
     @Test
     public void testaDriverJDBCeConexao() throws SQLException {
-        DriverManager.getConnection(URL,USER,PWD);
+        DriverManager.getConnection(URL, USER, PWD);
     }
-    
-        @Test
+
+    @Test
     public void testaExisteTabelasBD() throws SQLException {
-
-
-        Connection con = DriverManager.getConnection(URL,USER,PWD);
+        Connection con = DriverManager.getConnection(URL, USER, PWD);
         PreparedStatement stmt = con.prepareStatement("SHOW TABLES");
         ResultSet rs = stmt.executeQuery();
         rs.next();
-        assertEquals("clientes",rs.getString(1));
+        assertEquals("clientes", rs.getString(1));
         rs.next();
-        assertEquals("contas",rs.getString(1));
+        assertEquals("contas", rs.getString(1));
         rs.next();
-        assertEquals("contas_corrente",rs.getString(1));
+        assertEquals("contas_corrente", rs.getString(1));
         rs.next();
-        assertEquals("contas_investimento",rs.getString(1));        
-
-        
+        assertEquals("contas_investimento", rs.getString(1));
     }
 }
