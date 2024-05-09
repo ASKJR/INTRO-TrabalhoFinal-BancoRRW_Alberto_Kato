@@ -19,6 +19,7 @@ public class ContaCorrente extends Conta{
         super(id, cliente, saldo);
         this.limite = limite;
         this.taxaJurosLimite = taxaJurosLimite;
+        cliente.setContaCorrente(this);
     }
 
     public double getLimite() {
