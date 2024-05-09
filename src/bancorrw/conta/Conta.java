@@ -8,8 +8,51 @@ import bancorrw.cliente.Cliente;
 
 /**
  *
- * @author rafae
+ * @author Kato
  */
 public abstract class Conta {
- 
+
+    private long id;
+    private Cliente cliente;
+    private double saldo;
+
+    public Conta(long id, Cliente cliente, double saldo) {
+        this.id = id;
+        this.cliente = cliente;
+        this.saldo = saldo;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public void deposita(double valor) {
+
+    }
+
+    public void saca(double valor) {
+
+    }
+
+    public abstract void aplicaJuros();
+
+    public long getNumero() {
+        return this.id;
+    }
+
+    public double getSaldo() {
+        return saldo;
+    }
 }

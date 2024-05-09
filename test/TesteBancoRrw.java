@@ -27,7 +27,7 @@ import org.junit.runners.MethodSorters;
 
 /**
  *
- * @author rafae
+ * @author Kato
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TesteBancoRrw{
