@@ -42,7 +42,7 @@ public abstract class Conta {
         this.saldo += valor;
     }
 
-    public void saca(double valor) {
+    public void saca(double valor) throws Exception {
         this.saldo -= valor;
     }
 

@@ -42,4 +42,19 @@ public class ContaCorrente extends Conta{
     public void aplicaJuros() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    @Override
+    public void saca(double valor) throws Exception {
+        if (valor <= this.getSaldo()+this.limite) {
+            super.saca(valor);
+        } else {
+           throw new Exception("Saldo insuficiente na conta."+
+                            "\nValor saque=1300.0"+
+                            "\nSaldo="+this.getSaldo()+
+                            "\nLimite="+this.getLimite()
+           );  
+        }
+    }
+    
+    
 }
