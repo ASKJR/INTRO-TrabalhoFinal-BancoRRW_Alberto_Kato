@@ -43,7 +43,7 @@ public abstract class Conta {
     }
 
     public void saca(double valor) {
-
+        this.saldo -= valor;
     }
 
     public abstract void aplicaJuros();
