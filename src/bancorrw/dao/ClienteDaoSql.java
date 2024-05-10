@@ -13,6 +13,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.sql.SQLException;
 
 /**
  *
@@ -96,7 +97,25 @@ public class ClienteDaoSql implements ClienteDao {
 
     @Override
     public Cliente getById(long id) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectById);) {
+            stmtLista.setLong(1, id);
+            try (ResultSet rs = stmtLista.executeQuery()) {
+                if (rs.next()) {
+                    // criando o objeto Cliente
+                    java.sql.Date date = rs.getDate("data_nascimento");
+                    LocalDate nascimento = date.toLocalDate();
+                    return new Cliente(
+                            rs.getLong("id_cliente"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            nascimento,
+                            rs.getString("cartao_credito")
+                    );
+                } else {
+                    throw new SQLException("Cliente não encontrada com id=" + id);
+                }
+            }
+        }
     }
 
     @Override
