@@ -17,10 +17,16 @@ public class ContaCorrente extends Conta {
     private double limite;
     private double taxaJurosLimite;
 
-    public ContaCorrente(double limite, double taxaJurosLimite, long id, Cliente cliente, double saldo) {
+    public ContaCorrente(double limite, double taxaJurosLimite, long id, Cliente cliente, double saldo) throws Exception{
         super(id, cliente, saldo);
         this.limite = limite;
         this.taxaJurosLimite = taxaJurosLimite;
+        
+        //Valida se conta corrente anterior tem o saldo zerado.
+        if (cliente.getContaCorrente()!=null && cliente.getContaCorrente().getSaldo() > 0.0) {
+            throw new Exception("Não pode modificar a conta corrente, pois saldo da original não está zerado. "
+                    + "Para fazer isso primeiro zere o saldo da conta do cliente. Saldo=" + cliente.getContaCorrente().getSaldo());
+        }
         cliente.setContaCorrente(this);
     }
 
@@ -67,5 +73,4 @@ public class ContaCorrente extends Conta {
             );
         }
     }
-
 }
