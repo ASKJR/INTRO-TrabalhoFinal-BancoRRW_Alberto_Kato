@@ -5,6 +5,8 @@
 package bancorrw.conta;
 
 import bancorrw.cliente.Cliente;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -40,24 +42,29 @@ public class ContaCorrente extends Conta {
 
     @Override
     public void aplicaJuros() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (this.getSaldo() < 0) {
+            try {
+                super.saca(this.getSaldo() * this.taxaJurosLimite);
+            } catch (Exception ex) {
+                Logger.getLogger(ContaCorrente.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     @Override
     public void saca(double valor) throws Exception {
         if (valor <= 0) {
-             throw new Exception("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
+            throw new Exception("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
         }
-        if (valor <= this.getSaldo()+this.limite) {
+        if (valor <= this.getSaldo() + this.limite) {
             super.saca(valor);
         } else {
-           throw new Exception("Saldo insuficiente na conta."+
-                            "\nValor saque=1300.0"+
-                            "\nSaldo="+this.getSaldo()+
-                            "\nLimite="+this.getLimite()
-           );  
+            throw new Exception("Saldo insuficiente na conta."
+                    + "\nValor saque=1300.0"
+                    + "\nSaldo=" + this.getSaldo()
+                    + "\nLimite=" + this.getLimite()
+            );
         }
     }
-    
-    
+
 }
