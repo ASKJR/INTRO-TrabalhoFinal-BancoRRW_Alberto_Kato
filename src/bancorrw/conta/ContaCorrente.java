@@ -10,7 +10,7 @@ import bancorrw.cliente.Cliente;
  *
  * @author Kato
  */
-public class ContaCorrente extends Conta{
+public class ContaCorrente extends Conta {
 
     private double limite;
     private double taxaJurosLimite;
