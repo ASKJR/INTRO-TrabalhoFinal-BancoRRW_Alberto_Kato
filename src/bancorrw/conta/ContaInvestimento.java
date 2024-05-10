@@ -62,8 +62,12 @@ public class ContaInvestimento extends Conta {
     }
 
     @Override
-    public void saca(double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void saca(double valor) throws Exception {
+        if ((this.getSaldo()-valor)< this.montanteMinimo) {
+            throw new Exception("Saldo insuficiente para saque. Valor Saque="+ valor 
+                    + " Saldo=" + this.getSaldo() +" Montante Minimo=" + this.montanteMinimo);
+        }
+        super.saca(valor);
     }
 
     @Override
