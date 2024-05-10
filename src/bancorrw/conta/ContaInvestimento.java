@@ -67,8 +67,8 @@ public class ContaInvestimento extends Conta {
     }
 
     @Override
-    public void deposita(double valor) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void deposita(double valor) throws Exception{
+        super.deposita(valor);
     }
 
 }
