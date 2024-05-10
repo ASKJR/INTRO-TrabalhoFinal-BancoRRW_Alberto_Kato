@@ -92,7 +92,23 @@ public class ClienteDaoSql implements ClienteDao {
 
     @Override
     public List<Cliente> getAll() throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectAll); ResultSet rs = stmtLista.executeQuery();) {
+            List<Cliente> clientes = new ArrayList();
+            while (rs.next()) {
+                java.sql.Date date = rs.getDate("data_nascimento");
+                LocalDate nascimento = date.toLocalDate();
+                // adicionando o objeto à lista
+                clientes.add(new Cliente(
+                        rs.getLong("id_cliente"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        nascimento,
+                        rs.getString("cartao_credito")
+                ));
+            }
+
+            return clientes;
+        }
     }
 
     @Override
@@ -120,22 +136,24 @@ public class ClienteDaoSql implements ClienteDao {
 
     @Override
     public void update(Cliente cliente) throws Exception {
-       try(Connection connection=ConnectionFactory.getConnection();
-           PreparedStatement stmtAtualiza = connection.prepareStatement(updateCliente);
-        ){
-            
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAtualiza = connection.prepareStatement(updateCliente);) {
+
             stmtAtualiza.setString(1, cliente.getNome());
             stmtAtualiza.setString(2, cliente.getCpf());
             stmtAtualiza.setDate(3, java.sql.Date.valueOf(cliente.getDataNascimento()));
             stmtAtualiza.setString(4, cliente.getCartaoCredito());
             stmtAtualiza.setLong(5, cliente.getId());
             stmtAtualiza.executeUpdate();
-        } 
+        }
     }
 
     @Override
     public void delete(Cliente cliente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtExcluir = connection.prepareStatement(deleteById);) {
+            stmtExcluir.setLong(1, cliente.getId());
+            stmtExcluir.executeUpdate();
+            cliente.setId(-1);
+        }
     }
 
     @Override
