@@ -44,7 +44,8 @@ public class ContaCorrente extends Conta {
     public void aplicaJuros() {
         if (this.getSaldo() < 0) {
             try {
-                super.saca(this.getSaldo() * this.taxaJurosLimite);
+                double juros = (this.getSaldo() * this.taxaJurosLimite)*(-1.0);
+                super.saca(juros);
             } catch (Exception ex) {
                 Logger.getLogger(ContaCorrente.class.getName()).log(Level.SEVERE, null, ex);
             }
