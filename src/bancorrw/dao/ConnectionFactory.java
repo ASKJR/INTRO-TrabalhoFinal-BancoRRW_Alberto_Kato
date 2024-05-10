@@ -3,28 +3,45 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package bancorrw.dao;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
+import javax.naming.NamingException;
 
 /**
  *
- * @author rafae
+ * @author Kato
  */
 public class ConnectionFactory {
+
     private static Properties properties;
+
     //Garente que não haverá instâncias da ConnectionFactory
-    private ConnectionFactory(){
+    private ConnectionFactory() {
     }
-    public static Connection getConnection() throws 
-            SQLException, IOException{
-        throw new RuntimeException("Não implementado. Implemente aqui");
+
+    public static Connection getConnection() throws
+            SQLException, IOException, NamingException {
+        readProperties();
+        String url = properties.getProperty("db.url");
+        String user = properties.getProperty("db.user");
+        String pwd = properties.getProperty("db.pwd");
+        return DriverManager.getConnection(
+                url, user, pwd);
     }
-    private static void readProperties() throws IOException
-    {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+
+    private static void readProperties() throws IOException {
+        if (properties == null) {
+            Properties props = new Properties();
+            //C:\Users\Kato\Desktop\pos-graduacao\OneDrive - ufpr.br\cursos\INTRO\Trabalho da disciplina\INTRO-TrabalhoFinal-BancoRRW_Alberto_Kato\src\bancorrw\dao
+            FileInputStream file = new FileInputStream(
+                    "./src/bancorrw/dao/DataBase.properties");
+            props.load(file);
+            properties = props;
+        }
     }
 }

@@ -61,8 +61,8 @@ public class TesteBancoRrw{
     private void inicializaBD() throws Exception{
         if(cliDao==null){
             cliDao = DaoFactory.getClienteDao(DaoType.SQL);
-            corDao = DaoFactory.getContaCorrenteDao(DaoType.SQL);
-            invDao = DaoFactory.getContaInvestimentoDao(DaoType.SQL);
+            //corDao = DaoFactory.getContaCorrenteDao(DaoType.SQL);
+            //invDao = DaoFactory.getContaInvestimentoDao(DaoType.SQL);
         }
         //exlcui todos os registros do BD
         cliDao.deleteAll();
