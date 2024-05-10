@@ -45,6 +45,9 @@ public class ContaCorrente extends Conta {
 
     @Override
     public void saca(double valor) throws Exception {
+        if (valor <= 0) {
+             throw new Exception("Valor do saque não pode ser negativo ou zero. Valor=" + valor);
+        }
         if (valor <= this.getSaldo()+this.limite) {
             super.saca(valor);
         } else {
