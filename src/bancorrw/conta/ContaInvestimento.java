@@ -5,6 +5,8 @@
 package bancorrw.conta;
 
 import bancorrw.cliente.Cliente;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,15 +19,15 @@ public class ContaInvestimento extends Conta {
     private double depositoMinimo;
 
     public ContaInvestimento(
-            double taxaRemuneracaoInvestimento, 
-            double montanteMinimo, 
-            double depositoMinimo, 
-            double saldo, 
-            long id, 
-            Cliente cliente) throws Exception{
+            double taxaRemuneracaoInvestimento,
+            double montanteMinimo,
+            double depositoMinimo,
+            double saldo,
+            long id,
+            Cliente cliente) throws Exception {
         super(id, cliente, saldo);
-        if (saldo < montanteMinimo){
-               throw new Exception("Saldo não pode ser menor que montante mínimo.");
+        if (saldo < montanteMinimo) {
+            throw new Exception("Saldo não pode ser menor que montante mínimo.");
         }
         this.taxaRemuneracaoInvestimento = taxaRemuneracaoInvestimento;
         this.montanteMinimo = montanteMinimo;
@@ -58,23 +60,27 @@ public class ContaInvestimento extends Conta {
 
     @Override
     public void aplicaJuros() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            super.deposita(this.getSaldo() * this.taxaRemuneracaoInvestimento);
+        } catch (Exception ex) {
+            Logger.getLogger(ContaCorrente.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @Override
     public void saca(double valor) throws Exception {
-        if ((this.getSaldo()-valor)< this.montanteMinimo) {
-            throw new Exception("Saldo insuficiente para saque. Valor Saque="+ valor 
-                    + " Saldo=" + this.getSaldo() +" Montante Minimo=" + this.montanteMinimo);
+        if ((this.getSaldo() - valor) < this.montanteMinimo) {
+            throw new Exception("Saldo insuficiente para saque. Valor Saque=" + valor
+                    + " Saldo=" + this.getSaldo() + " Montante Minimo=" + this.montanteMinimo);
         }
         super.saca(valor);
     }
 
     @Override
-    public void deposita(double valor) throws Exception{
+    public void deposita(double valor) throws Exception {
         if (valor < this.depositoMinimo) {
-            throw new Exception("Valor do depóstio não atingiu o mínimo. Valor Depósito="+ valor 
-                    +" Depóstio Mínimo=" + this.depositoMinimo);
+            throw new Exception("Valor do depóstio não atingiu o mínimo. Valor Depósito=" + valor
+                    + " Depóstio Mínimo=" + this.depositoMinimo);
         }
         super.deposita(valor);
     }
