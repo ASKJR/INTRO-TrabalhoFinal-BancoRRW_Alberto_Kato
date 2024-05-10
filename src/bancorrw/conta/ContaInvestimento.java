@@ -72,7 +72,10 @@ public class ContaInvestimento extends Conta {
 
     @Override
     public void deposita(double valor) throws Exception{
+        if (valor < this.depositoMinimo) {
+            throw new Exception("Valor do depóstio não atingiu o mínimo. Valor Depósito="+ valor 
+                    +" Depóstio Mínimo=" + this.depositoMinimo);
+        }
         super.deposita(valor);
     }
-
 }
