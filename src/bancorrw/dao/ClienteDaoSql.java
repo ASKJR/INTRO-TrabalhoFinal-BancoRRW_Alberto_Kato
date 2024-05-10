@@ -120,7 +120,17 @@ public class ClienteDaoSql implements ClienteDao {
 
     @Override
     public void update(Cliente cliente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+       try(Connection connection=ConnectionFactory.getConnection();
+           PreparedStatement stmtAtualiza = connection.prepareStatement(updateCliente);
+        ){
+            
+            stmtAtualiza.setString(1, cliente.getNome());
+            stmtAtualiza.setString(2, cliente.getCpf());
+            stmtAtualiza.setDate(3, java.sql.Date.valueOf(cliente.getDataNascimento()));
+            stmtAtualiza.setString(4, cliente.getCartaoCredito());
+            stmtAtualiza.setLong(5, cliente.getId());
+            stmtAtualiza.executeUpdate();
+        } 
     }
 
     @Override
