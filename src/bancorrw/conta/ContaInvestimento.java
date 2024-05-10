@@ -16,8 +16,17 @@ public class ContaInvestimento extends Conta {
     private double montanteMinimo;
     private double depositoMinimo;
 
-    public ContaInvestimento(double taxaRemuneracaoInvestimento, double montanteMinimo, double depositoMinimo, double saldo, long id, Cliente cliente) {
+    public ContaInvestimento(
+            double taxaRemuneracaoInvestimento, 
+            double montanteMinimo, 
+            double depositoMinimo, 
+            double saldo, 
+            long id, 
+            Cliente cliente) throws Exception{
         super(id, cliente, saldo);
+        if (saldo < montanteMinimo){
+               throw new Exception("Saldo não pode ser menor que montante mínimo.");
+        }
         this.taxaRemuneracaoInvestimento = taxaRemuneracaoInvestimento;
         this.montanteMinimo = montanteMinimo;
         this.depositoMinimo = depositoMinimo;
