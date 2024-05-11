@@ -251,9 +251,7 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
 
     @Override
     public void delete(ContaCorrente contaCorrente) throws Exception {
-         try (Connection connection=ConnectionFactory.getConnection();
-             PreparedStatement stmtExcluir = connection.prepareStatement(deleteById);
-            ){
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtExcluir = connection.prepareStatement(deleteById);) {
             stmtExcluir.setLong(1, contaCorrente.getId());
             stmtExcluir.executeUpdate();
             contaCorrente.setId(-1);
@@ -270,7 +268,21 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
 
     @Override
     public ContaCorrente getContaCorrenteByCliente(Cliente cliente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectByCliente);) {
+            stmtLista.setLong(1, cliente.getId());
+            try (ResultSet rs = stmtLista.executeQuery()) {
+                if (rs.next()) {
+                    return new ContaCorrente(
+                            rs.getDouble("limite"),
+                            rs.getDouble("taxa_juros_limite"),
+                            rs.getLong("contas_corrente.id_conta"),
+                            cliente,
+                            rs.getDouble("saldo")
+                    );
+                } else {
+                    throw new Exception("Cliente não encontrado com id=" + cliente.getId());
+                }
+            }
+        }
     }
-
 }
