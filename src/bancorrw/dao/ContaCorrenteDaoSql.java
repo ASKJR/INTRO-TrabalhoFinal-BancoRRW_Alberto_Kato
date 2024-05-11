@@ -272,6 +272,7 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
             stmtLista.setLong(1, cliente.getId());
             try (ResultSet rs = stmtLista.executeQuery()) {
                 if (rs.next()) {
+                    cliente.setContaCorrente(null);
                     return new ContaCorrente(
                             rs.getDouble("limite"),
                             rs.getDouble("taxa_juros_limite"),
