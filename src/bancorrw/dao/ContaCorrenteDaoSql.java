@@ -16,14 +16,18 @@ import java.util.List;
 
 /**
  *
- * @author rafae
+ * @author Kato
  */
 public class ContaCorrenteDaoSql implements ContaCorrenteDao{
     private ContaCorrenteDaoSql(){
     }
     private static ContaCorrenteDaoSql dao;
     public static ContaCorrenteDaoSql getContaCorrenteDaoSql(){
-        throw new RuntimeException("Não implementado. Implemente aqui");
+         if (dao == null) {
+            return dao = new ContaCorrenteDaoSql();
+        } else {
+            return dao;
+        }
     } 
     private String insertContaCorrente = 
         "INSERT INTO " +
@@ -144,7 +148,29 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao{
     private final String ressetAIContas = "ALTER TABLE contas AUTO_INCREMENT =1";
     @Override
     public void add(ContaCorrente contaCorrente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+       try (Connection connection=ConnectionFactory.getConnection();
+             PreparedStatement stmtAdicionaConta = connection.prepareStatement(insertConta, Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement stmtAdicionaContaCorrente = connection.prepareStatement(insertContaCorrente);
+            )
+        {
+            // seta os valores
+            connection.setAutoCommit(false);
+            stmtAdicionaConta.setLong(1, contaCorrente.getCliente().getId());
+            stmtAdicionaConta.setDouble(2, contaCorrente.getSaldo());
+            // executa
+            stmtAdicionaConta.execute();
+            //Seta o id da conta
+            ResultSet rs = stmtAdicionaConta.getGeneratedKeys();
+            rs.next();
+            long idConta = rs.getLong(1);
+            contaCorrente.setId(idConta);
+            stmtAdicionaContaCorrente.setLong(1, idConta);
+            stmtAdicionaContaCorrente.setDouble(2,contaCorrente.getLimite());
+            stmtAdicionaContaCorrente.setDouble(3,contaCorrente.getTaxaJurosLimite());
+            stmtAdicionaContaCorrente.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+        } 
     }
 
     @Override
@@ -169,7 +195,10 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao{
 
     @Override
     public void deleteAll() throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtExcluir = connection.prepareStatement(deleteAll); PreparedStatement stmtResetAI = connection.prepareStatement(ressetAIContas);) {
+            stmtExcluir.executeUpdate();
+            stmtResetAI.executeUpdate();
+        }
     }
 
     @Override
