@@ -150,7 +150,7 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public void add(ContaInvestimento contaInvestimento) throws Exception {
-          try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAdicionaConta = connection.prepareStatement(insertConta, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmtAdicionaContaCorrente = connection.prepareStatement(insertContaInvstimento);) {
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAdicionaConta = connection.prepareStatement(insertConta, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmtAdicionaContaCorrente = connection.prepareStatement(insertContaInvstimento);) {
             // seta os valores
             connection.setAutoCommit(false);
             stmtAdicionaConta.setLong(1, contaInvestimento.getCliente().getId());
@@ -179,7 +179,33 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public ContaInvestimento getById(long id) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectById);) {
+            stmtLista.setLong(1, id);
+            try (ResultSet rs = stmtLista.executeQuery()) {
+                if (rs.next()) {
+                    // adicionando o objeto à lista
+                    Cliente cliente = new Cliente(
+                            rs.getLong("clientes.id_cliente"),
+                            rs.getString("nome"),
+                            rs.getString("cpf"),
+                            rs.getDate("data_nascimento").toLocalDate(),
+                            rs.getString("cartao_credito")
+                    );
+                    ContaInvestimento contaInvestimento = new ContaInvestimento(
+                            rs.getDouble("taxa_remuneracao_investimento"),
+                            rs.getDouble("montante_minimo"),
+                            rs.getDouble("deposito_minimo"),
+                            rs.getDouble("saldo"),
+                            rs.getLong("contas_investimento.id_conta"),
+                            cliente
+                    );
+                    contaInvestimento.getCliente().addContaInvestimento(contaInvestimento);
+                    return contaInvestimento;
+                } else {
+                    throw new Exception("Cliente não encontrado com id=" + id);
+                }
+            }
+        }
     }
 
     @Override

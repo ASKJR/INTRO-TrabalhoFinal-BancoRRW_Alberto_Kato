@@ -8,7 +8,6 @@ import bancorrw.conta.ContaCorrente;
 import bancorrw.conta.ContaInvestimento;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,6 +23,7 @@ public class Cliente extends Pessoa {
     public Cliente(long id, String nome, String cpf, LocalDate dataNascimento, String cartaoCredito) {
         super(id, nome, cpf, dataNascimento);
         this.cartaoCredito = cartaoCredito;
+        this.contasInvestimento = new ArrayList<ContaInvestimento>();
     }
 
     public ContaCorrente getContaCorrente() {
