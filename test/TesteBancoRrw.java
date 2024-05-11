@@ -63,11 +63,12 @@ public class TesteBancoRrw{
         if(cliDao==null){
             cliDao = DaoFactory.getClienteDao(DaoType.SQL);
             corDao = DaoFactory.getContaCorrenteDao(DaoType.SQL);
-            //invDao = DaoFactory.getContaInvestimentoDao(DaoType.SQL);
+            invDao = DaoFactory.getContaInvestimentoDao(DaoType.SQL);
         }
         //exlcui todos os registros do BD
         cliDao.deleteAll();
         corDao.deleteAll();
+        invDao.deleteAll();
     }
     @Test
     public void t01verificaEstruturaClassePessoa() throws ClassNotFoundException {
