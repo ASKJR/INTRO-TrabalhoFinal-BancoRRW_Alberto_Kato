@@ -251,7 +251,13 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
 
     @Override
     public void delete(ContaCorrente contaCorrente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+         try (Connection connection=ConnectionFactory.getConnection();
+             PreparedStatement stmtExcluir = connection.prepareStatement(deleteById);
+            ){
+            stmtExcluir.setLong(1, contaCorrente.getId());
+            stmtExcluir.executeUpdate();
+            contaCorrente.setId(-1);
+        }
     }
 
     @Override
