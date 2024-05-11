@@ -150,7 +150,7 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public void add(ContaInvestimento contaInvestimento) throws Exception {
-        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAdicionaConta = connection.prepareStatement(insertConta, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmtAdicionaContaCorrente = connection.prepareStatement(insertContaInvstimento);) {
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAdicionaConta = connection.prepareStatement(insertConta, Statement.RETURN_GENERATED_KEYS); PreparedStatement stmtAdicionaContaInvestimento = connection.prepareStatement(insertContaInvstimento);) {
             // seta os valores
             connection.setAutoCommit(false);
             stmtAdicionaConta.setLong(1, contaInvestimento.getCliente().getId());
@@ -162,11 +162,11 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
             rs.next();
             long idConta = rs.getLong(1);
             contaInvestimento.setId(idConta);
-            stmtAdicionaContaCorrente.setLong(1, idConta);
-            stmtAdicionaContaCorrente.setDouble(2, contaInvestimento.getTaxaRemuneracaoInvestimento());
-            stmtAdicionaContaCorrente.setDouble(3, contaInvestimento.getMontanteMinimo());
-            stmtAdicionaContaCorrente.setDouble(4, contaInvestimento.getDepositoMinimo());
-            stmtAdicionaContaCorrente.executeUpdate();
+            stmtAdicionaContaInvestimento.setLong(1, idConta);
+            stmtAdicionaContaInvestimento.setDouble(2, contaInvestimento.getTaxaRemuneracaoInvestimento());
+            stmtAdicionaContaInvestimento.setDouble(3, contaInvestimento.getMontanteMinimo());
+            stmtAdicionaContaInvestimento.setDouble(4, contaInvestimento.getDepositoMinimo());
+            stmtAdicionaContaInvestimento.executeUpdate();
             connection.commit();
             connection.setAutoCommit(true);
         }
@@ -174,7 +174,31 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public List<ContaInvestimento> getAll() throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectAll); ResultSet rs = stmtLista.executeQuery();) {
+            List<ContaInvestimento> contas = new ArrayList();
+            while (rs.next()) {
+                // adicionando o objeto à lista
+                Cliente cliente = new Cliente(
+                        rs.getLong("clientes.id_cliente"),
+                        rs.getString("nome"),
+                        rs.getString("cpf"),
+                        rs.getDate("data_nascimento").toLocalDate(),
+                        rs.getString("cartao_credito")
+                );
+                contas.add(
+                        new ContaInvestimento(
+                                rs.getDouble("taxa_remuneracao_investimento"),
+                                rs.getDouble("montante_minimo"),
+                                rs.getDouble("deposito_minimo"),
+                                rs.getDouble("saldo"),
+                                rs.getLong("contas_investimento.id_conta"),
+                                cliente
+                        )
+                );
+            }
+
+            return contas;
+        }
     }
 
     @Override
@@ -210,7 +234,7 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public void update(ContaInvestimento contaInvestimento) throws Exception {
-         try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAtualizaConta = connection.prepareStatement(updateConta); PreparedStatement stmtAtualizaContaInvestimento = connection.prepareStatement(updateContaInvestimento);) {
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAtualizaConta = connection.prepareStatement(updateConta); PreparedStatement stmtAtualizaContaInvestimento = connection.prepareStatement(updateContaInvestimento);) {
 
             connection.setAutoCommit(false);
             stmtAtualizaConta.setDouble(1, contaInvestimento.getSaldo());
@@ -228,8 +252,12 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
     }
 
     @Override
-    public void delete(ContaInvestimento conta) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+    public void delete(ContaInvestimento contaInvestimento) throws Exception {
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtExcluir = connection.prepareStatement(deleteById);) {
+            stmtExcluir.setLong(1, contaInvestimento.getId());
+            stmtExcluir.executeUpdate();
+            contaInvestimento.setId(-1);
+        }
     }
 
     @Override
