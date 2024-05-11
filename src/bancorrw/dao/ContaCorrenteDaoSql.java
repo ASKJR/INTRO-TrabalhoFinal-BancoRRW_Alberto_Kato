@@ -233,7 +233,20 @@ public class ContaCorrenteDaoSql implements ContaCorrenteDao {
 
     @Override
     public void update(ContaCorrente contaCorrente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtAtualizaConta = connection.prepareStatement(updateConta); PreparedStatement stmtAtualizaContaCorrente = connection.prepareStatement(updateContaCorrente);) {
+
+            connection.setAutoCommit(false);
+            stmtAtualizaConta.setDouble(1, contaCorrente.getSaldo());
+            stmtAtualizaConta.setLong(2, contaCorrente.getId());
+            stmtAtualizaConta.executeUpdate();
+
+            stmtAtualizaContaCorrente.setDouble(1, contaCorrente.getLimite());
+            stmtAtualizaContaCorrente.setDouble(2, contaCorrente.getTaxaJurosLimite());
+            stmtAtualizaContaCorrente.setLong(3, contaCorrente.getId());
+            stmtAtualizaContaCorrente.executeUpdate();
+            connection.commit();
+            connection.setAutoCommit(true);
+        }
     }
 
     @Override
