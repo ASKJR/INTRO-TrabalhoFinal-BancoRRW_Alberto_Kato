@@ -270,7 +270,27 @@ public class ContaInvestimentoDaoSql implements ContaInvestimentoDao {
 
     @Override
     public List<ContaInvestimento> getContasInvestimentoByCliente(Cliente cliente) throws Exception {
-        throw new RuntimeException("Não implementado. Implemente aqui");
+        try (Connection connection = ConnectionFactory.getConnection(); PreparedStatement stmtLista = connection.prepareStatement(selectByCliente); ) {
+            stmtLista.setLong(1, cliente.getId());
+            ResultSet rs = stmtLista.executeQuery();
+            List<ContaInvestimento> contas = new ArrayList();
+            cliente.getContasInvestimento().clear();
+            while (rs.next()) {
+                // adicionando o objeto à lista
+                
+                contas.add(
+                        new ContaInvestimento(
+                                rs.getDouble("taxa_remuneracao_investimento"),
+                                rs.getDouble("montante_minimo"),
+                                rs.getDouble("deposito_minimo"),
+                                rs.getDouble("saldo"),
+                                rs.getLong("contas_investimento.id_conta"),
+                                cliente
+                        )
+                );
+            }
+            return contas;
+        }
     }
 
 }

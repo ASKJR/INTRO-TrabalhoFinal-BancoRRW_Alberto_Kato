@@ -26,6 +26,7 @@ public class ContaInvestimento extends Conta {
             long id,
             Cliente cliente) throws Exception {
         super(id, cliente, saldo);
+        cliente.addContaInvestimento(this);
         if (saldo < montanteMinimo) {
             throw new Exception("Saldo não pode ser menor que montante mínimo.");
         }

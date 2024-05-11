@@ -43,7 +43,17 @@ public class Cliente extends Pessoa {
     }
 
     public double getSaldoTotalCliente() {
-        return 0.0;
+        double total = 0;
+
+        if (this.contaCorrente != null) {
+            total += this.contaCorrente.getSaldo();
+        }
+
+        for (ContaInvestimento ci : this.contasInvestimento) {
+            total += ci.getSaldo();
+        }
+
+        return total;
     }
 
     public String getCartaoCredito() {
